@@ -18,6 +18,35 @@ class TableFilterOption:
         self.table = getattr(options, 'table')
         self.columns = getattr(options, 'columns', [])
         self.exclude = getattr(options, 'exclude', [])
+        if self.columns == '__ALL__':
+            self.columns = []
+            for key, value in self.table.base_columns.items():
+                self.columns.append(key)
+        if self.exclude == '__ALL__':
+            self.exclude = []
+            for key, value in self.table.base_columns.items():
+                self.exclude.append(key)
+        self._check_column_and_exclude(self.columns, self.exclude, self.table, class_name)
+
+    def _check_column_and_exclude(self, columns, exclude, table, class_name):
+        """
+        it checks column and exclude with column in table
+        if required column does not exist in table then it raises AttributeError
+
+        :param columns:
+        :param exclude:
+        :param table:
+        :param class_name:
+        :return:
+        """
+
+        for item in columns:
+            if table.base_column_filters.get(item) is None:
+                raise AttributeError(f'defined column "{item}" in {class_name}.Meta.columns without column in {table}')
+
+        for item in exclude:
+            if table.base_column_filters.get(item) is None:
+                raise AttributeError(f'excluded column "{item}" in {class_name}.Meta.exclude without column in {table}')
 
     def _check_types(self, options, class_name):
         """
