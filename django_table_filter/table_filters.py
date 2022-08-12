@@ -1,5 +1,6 @@
 from .tables import Table
 from .column_filters import ColumnFilter
+from django.contrib.admin import utils
 
 
 class TableFilterOption:
@@ -111,6 +112,37 @@ class TableFilterMetaclass(type):
             if table.base_columns.get(key) is None:
                 raise AttributeError(f'defined column filter "{key}" without column in {table}')
 
+    @staticmethod
+    def add_column_filters(base_column_filters, columns, table, model):
+        """
+        it makes columnFilter ready for columns from params then add them to base_column_filters
+
+        :param base_column_filters:
+        :param columns:
+        :param table:
+        :param model:
+        :return:
+        """
+        for column in columns:
+            fields = utils.get_fields_from_path(model, column)
+            name_and_fields = {}
+            fields_and_models = {}
+            split_column_names = tuple(column.split(utils.LOOKUP_SEP))
+            for number, field in enumerate(fields):
+                name_and_fields.update({split_column_names[number]: field})
+                try:
+                    fields_and_models.update({field: utils.get_model_from_relation(field)})
+                except utils.NotRelationField:
+                    pass
+            column_filter = generate_column_filter(column=table.base_columns[column], table=table, model=model,
+                                                   split_column_names=split_column_names,
+                                                   name_and_fields=name_and_fields, fields_and_models=fields_and_models)
+            base_column_filters.update({column:column_filter})
+
 
 class TableFilter(metaclass=TableFilterMetaclass):
     pass
+
+
+def generate_column_filter(*, column, table, model, split_column_names, name_and_fields, fields_and_models):
+    ...
