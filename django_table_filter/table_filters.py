@@ -1,6 +1,7 @@
 from .tables import Table
 from .column_filters import ColumnFilter
 from django.contrib.admin import utils
+from . import conf
 
 
 class TableFilterOption:
@@ -134,15 +135,12 @@ class TableFilterMetaclass(type):
                     fields_and_models.update({field: utils.get_model_from_relation(field)})
                 except utils.NotRelationField:
                     pass
-            column_filter = generate_column_filter(column=table.base_columns[column], table=table, model=model,
-                                                   split_column_names=split_column_names,
-                                                   name_and_fields=name_and_fields, fields_and_models=fields_and_models)
-            base_column_filters.update({column:column_filter})
+            column_filter = conf.generate_column_filter(column=table.base_columns[column], table=table, model=model,
+                                                        split_column_names=split_column_names,
+                                                        name_and_fields=name_and_fields,
+                                                        fields_and_models=fields_and_models)
+            base_column_filters.update({column: column_filter})
 
 
 class TableFilter(metaclass=TableFilterMetaclass):
     pass
-
-
-def generate_column_filter(*, column, table, model, split_column_names, name_and_fields, fields_and_models):
-    ...
