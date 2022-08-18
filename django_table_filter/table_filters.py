@@ -15,9 +15,14 @@ class TableFilterOption:
     def __init__(self, *, options, class_name):
         if not hasattr(options, 'table'):
             raise AttributeError(f'{class_name}.Meta without table')
+
         self._check_types(options, class_name)
 
         self.table = getattr(options, 'table')
+        if hasattr(self.table, 'model'):
+            self.model = getattr(self.table, 'model')
+        else:
+            AttributeError(f'{class_name}.Meta.table = "{self.table}" without model')
         self.columns = getattr(options, 'columns', [])
         self.exclude = getattr(options, 'exclude', [])
         if self.columns == '__ALL__':
