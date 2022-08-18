@@ -1,6 +1,7 @@
 from .tables import Table
 from .column_filters import ColumnFilter
 from django.contrib.admin import utils
+from django.core import exceptions
 from . import conf
 
 
@@ -27,13 +28,32 @@ class TableFilterOption:
         self.exclude = getattr(options, 'exclude', [])
         if self.columns == '__ALL__':
             self.columns = []
-            for key, value in self.table.base_columns.items():
-                self.columns.append(key)
+            self.set__ALL__(self.columns, self.table.base_columns, self.model)
         if self.exclude == '__ALL__':
             self.exclude = []
-            for key, value in self.table.base_columns.items():
-                self.exclude.append(key)
+            self.set__ALL__(self.exclude, self.table.base_columns, self.model)
         self._check_column_and_exclude(self.columns, self.exclude, self.table, class_name)
+
+    def set__ALL__(self, list_object: list, base_columns, model):
+        """
+        it finds all possible columns in base_columns and set them to list_object
+        possible column is the column in table that exist as field in model
+        possible column:
+            it is 'table.name_column == model.name_field'
+
+
+        :param list_object:
+        :param base_columns:
+        :param model:
+        :return:
+        """
+        try:
+            for key, value in base_columns.items():
+                fields = utils.get_fields_from_path(model, key)
+                if len(fields) > 0:
+                    list_object.append(key)
+        except exceptions.FieldDoesNotExist:
+            pass
 
     def _check_column_and_exclude(self, columns, exclude, table, class_name):
         """
