@@ -2,6 +2,7 @@ from .tables import Table
 from .column_filters import ColumnFilter
 from django.contrib.admin import utils
 from django.core import exceptions
+from django_filters import filterset
 from . import conf
 
 
@@ -109,6 +110,7 @@ class TableFilterMetaclass(type):
         base_column_filters = attrs['base_column_filters']
         cls.check_column_filters(base_column_filters, opt.table)
         cls.add_column_filters(base_column_filters, opt.columns, opt.table, opt.model)
+        cls.generate_mini_filtersets(base_column_filters, opt.model)
         return type.__new__(cls, name, bases, attrs)
 
     @staticmethod
@@ -167,6 +169,24 @@ class TableFilterMetaclass(type):
                                                         fields_and_models=fields_and_models)
             if base_column_filters.get(column) is None:
                 base_column_filters.update({column: column_filter})
+
+    @staticmethod
+    def generate_mini_filtersets(base_column_filters, model):
+        """
+        generate mini_filterset for each base_column_filters which is FilterSet
+
+        :param base_column_filters:
+        :param model:
+        :return mini_filtersets:
+        """
+        mini_filtersets = {}
+        for key, value in base_column_filters:
+            meta = type(str("Meta"), (object,), {"model": model})
+            attrs = {"Meta": meta}
+            attrs.update(value.filters)
+            mini_filterset = type(str("%s_MiniFilterSet" % key), (filterset.FilterSet,), attrs)
+            mini_filtersets.update({key: mini_filterset})
+        return mini_filtersets
 
 
 class TableFilter(metaclass=TableFilterMetaclass):
