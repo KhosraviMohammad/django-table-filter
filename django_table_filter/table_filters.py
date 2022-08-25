@@ -108,6 +108,7 @@ class TableFilterMetaclass(type):
         cls.set_base_column_filters(attrs)
         base_column_filters = attrs['base_column_filters']
         cls.check_column_filters(base_column_filters, opt.table)
+        cls.add_column_filters(base_column_filters, opt.columns, opt.table, opt.model)
         return type.__new__(cls, name, bases, attrs)
 
     @staticmethod
