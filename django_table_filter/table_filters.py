@@ -180,7 +180,7 @@ class TableFilterMetaclass(type):
         :return mini_filtersets:
         """
         mini_filtersets = {}
-        for key, value in base_column_filters:
+        for key, value in base_column_filters.items():
             meta = type(str("Meta"), (object,), {"model": model})
             attrs = {"Meta": meta}
             attrs.update(value.filters)
