@@ -190,4 +190,20 @@ class TableFilterMetaclass(type):
 
 
 class TableFilter(metaclass=TableFilterMetaclass):
-    pass
+
+    def __init__(self, data, request, *args, **kwargs):
+        data = self.filter_data(self.mini_filtersets, request, data=None)
+
+    def filter_data(self, mini_filtersets, request, data=None):
+        """
+        it filters data
+
+        :param mini_filtersets:
+        :param request:
+        :param data:
+        :return data:
+        """
+        for key, value in mini_filtersets.items():
+            mini_filterset_obj = value(request.GET, queryset=data)
+            data = mini_filterset_obj.qs
+        return data
