@@ -165,7 +165,8 @@ class TableFilterMetaclass(type):
                                                         split_column_names=split_column_names,
                                                         name_and_fields=name_and_fields,
                                                         fields_and_models=fields_and_models)
-            base_column_filters.update({column: column_filter})
+            if base_column_filters.get(column) is None:
+                base_column_filters.update({column: column_filter})
 
 
 class TableFilter(metaclass=TableFilterMetaclass):
