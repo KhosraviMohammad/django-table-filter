@@ -111,7 +111,13 @@ class TableFilterMetaclass(type):
         cls.check_column_filters(base_column_filters, opt.table)
         cls.add_column_filters(base_column_filters, opt.columns, opt.table, opt.model)
         cls.generate_mini_filtersets(base_column_filters, opt.model)
-        return type.__new__(cls, name, bases, attrs)
+        # it givs the class of TableFilter as object
+        # then, assigned output to new class variable
+        new_class = type.__new__(cls, name, bases, attrs)
+        # this gets two params, one is Table class and another one is TableFilter Class
+        # after it sets TableFilter to Table
+        Table.set_table_filter(opt.table, new_class)
+        return new_class
 
     @staticmethod
     def set_base_column_filters(attrs):
