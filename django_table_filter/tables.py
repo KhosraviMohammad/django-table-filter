@@ -1,4 +1,5 @@
 from django_tables2 import tables
+import inspect
 
 
 class TableMetaclass(tables.DeclarativeColumnsMetaclass):
@@ -21,3 +22,20 @@ class Table(tables.Table, metaclass=TableMetaclass):
         :return:
         """
         table.table_filter = table_filter
+
+
+def split_parms_function(func, kwargs: dict):
+    """
+    it compares func kwargs with kwargs after, if some items are appeared that are the same in both,
+    then it outs that item in kwargs, puts to another dic varible, and return it
+
+    :param func:
+    :param kwargs:
+    :return:
+    """
+    argspec = inspect.getfullargspec(func=func)
+    splited_kwargs = {}
+    for value in argspec.kwonlyargs:
+        splited_kwargs[value] = kwargs.pop(value, argspec.kwonlydefaults[value])
+    return splited_kwargs
+
