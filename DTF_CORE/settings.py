@@ -37,8 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # project requirements
+    'django_tables2',
+    'django_filters',
+    # project apps
     'table_filters',
     'example',
+    
 ]
 
 MIDDLEWARE = [
