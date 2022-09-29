@@ -4,7 +4,7 @@ import inspect
 
 class TableMetaclass(tables.DeclarativeColumnsMetaclass):
     def __new__(cls, name, bases, attrs):
-        return tables.DeclarativeColumnsMetaclass(cls, name, bases, attrs)
+        return tables.DeclarativeColumnsMetaclass.__new__(cls, name, bases, attrs)
 
 
 class Table(tables.Table, metaclass=TableMetaclass):
