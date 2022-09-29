@@ -4,14 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bootstrap demo</title>
-    {% include header_css_javascript.html %}
+    {% include 'main/header_css_javascript.html' %}
     {% block header_extra_css_js %}
     {% endblock header_extra_css_js %}
   </head>
   <body>
 
     {% block header %}
-        {% include header.html %}
+        {% include 'main/header.html' %}
     {% endblock header %}
 
     {% block content %}
@@ -19,13 +19,13 @@
     {% endblock content %}
 
     {% block footer %}
-        {% include footer.html %}
+        {% include 'main/footer.html' %}
     {% endblock footer %}
 
 
-    {% include footer_css_javascript.html %}
+    {% include 'main/footer_css_javascript.html' %}
     {% block footer_extra_css_js %}
     {% endblock footer_extra_css_js %}
-    
+
   </body>
 </html>
