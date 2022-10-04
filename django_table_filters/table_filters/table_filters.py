@@ -21,8 +21,8 @@ class TableFilterOption:
         self._check_types(options, class_name)
 
         self.table = getattr(options, 'table')
-        if hasattr(self.table, 'model'):
-            self.model = getattr(self.table, 'model')
+        if hasattr(self.table.Meta, 'model'):
+            self.model = getattr(self.table.Meta, 'model')
         else:
             AttributeError(f'{class_name}.Meta.table = "{self.table}" without model')
         self.columns = getattr(options, 'columns', [])
