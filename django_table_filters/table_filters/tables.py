@@ -1,5 +1,8 @@
-from django_tables2 import tables
 import inspect
+
+from django.db.models import QuerySet
+
+from django_tables2 import tables
 
 
 class TableMetaclass(tables.DeclarativeColumnsMetaclass):
@@ -9,19 +12,19 @@ class TableMetaclass(tables.DeclarativeColumnsMetaclass):
 
 class Table(tables.Table, metaclass=TableMetaclass):
 
-    def __init__(self, *args, table_filter_activation=False, request=None, **kwargs):
+    def __init__(self, *, request, data, table_filter_activation=False, **kwargs):
         table_kwargs = split_prams_function(super(Table, self).__init__, kwargs=kwargs)
         table_filter_kwargs = kwargs
+        table_kwargs['data'] = data
+        self.request = request
         if table_filter_activation and hasattr(type(self), 'table_filter'):
-            if request is None:
-                raise ValueError(f'table_filter is true, so request parm can not be None in {self}.__init__')
-            # if not isinstance(data, QuerySet):
-            #     raise TypeError(f'table_filter is true, so the data parm in {self} must be instance of QuerySet')
-            obj = self.table_filter(request, **table_filter_kwargs)
+            if not isinstance(data, QuerySet):
+                raise TypeError(f'table_filter is true, so the data parm in {self} must be instance of QuerySet')
+            obj = self.table_filter(data=data, request=request, **table_filter_kwargs)
             self.table_filter_obj = obj
-            super(Table, self).__init__(*args, **table_kwargs)
+            super(Table, self).__init__(**table_kwargs)
         else:
-            super(Table, self).__init__(*args, **table_kwargs)
+            super(Table, self).__init__(**table_kwargs)
 
     @staticmethod
     def set_table_filter(table, table_filter):
