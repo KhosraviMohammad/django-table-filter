@@ -1,22 +1,24 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title>Table filter</title>
     {% include 'main/header_css_javascript.html' %}
     {% block header_extra_css_js %}
     {% endblock header_extra_css_js %}
-  </head>
-  <body>
+</head>
+<body class="text-bg-secondary">
 
     {% block header %}
         {% include 'main/header.html' %}
     {% endblock header %}
+    <div class="container">
+        {% block content %}
 
-    {% block content %}
-    
-    {% endblock content %}
+        {% endblock content %}
+    </div>
+
 
     {% block footer %}
         {% include 'main/footer.html' %}
@@ -27,5 +29,5 @@
     {% block footer_extra_css_js %}
     {% endblock footer_extra_css_js %}
 
-  </body>
+</body>
 </html>
