@@ -12,8 +12,8 @@ class Table(tables.Table, metaclass=TableMetaclass):
     def __init__(self, *args, table_filter_activation=False, request=None, **kwargs):
         table_kwargs = split_prams_function(super(Table, self).__init__, kwargs=kwargs)
         table_filter_kwargs = kwargs
-        if table_filter_activation and hasattr(Table, 'table_filter'):
-            if request is not None:
+        if table_filter_activation and hasattr(type(self), 'table_filter'):
+            if request is None:
                 raise ValueError(f'table_filter is true, so request parm can not be None in {self}.__init__')
             # if not isinstance(data, QuerySet):
             #     raise TypeError(f'table_filter is true, so the data parm in {self} must be instance of QuerySet')
