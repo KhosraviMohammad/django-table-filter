@@ -69,11 +69,11 @@ class TableFilterOption:
         """
 
         for item in columns:
-            if table.base_column_filters.get(item) is None:
+            if table.base_columns.get(item) is None:
                 raise AttributeError(f'defined column "{item}" in {class_name}.Meta.columns without column in {table}')
 
         for item in exclude:
-            if table.base_column_filters.get(item) is None:
+            if table.base_columns.get(item) is None:
                 raise AttributeError(f'excluded column "{item}" in {class_name}.Meta.exclude without column in {table}')
 
     def _check_types(self, options, class_name):
