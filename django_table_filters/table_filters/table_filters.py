@@ -49,10 +49,10 @@ class TableFilterOption:
         :return:
         """
         try:
-            for key, value in base_columns.items():
-                fields = utils.get_fields_from_path(model, key)
+            for name, column in base_columns.items():
+                fields = utils.get_fields_from_path(model, name)
                 if len(fields) > 0:
-                    list_object.append(key)
+                    list_object.append(name)
         except exceptions.FieldDoesNotExist:
             pass
 
@@ -146,9 +146,9 @@ class TableFilterMetaclass(type):
         :param table:
         :return:
         """
-        for key, value in base_column_filters.items():
-            if table.base_columns.get(key) is None:
-                raise AttributeError(f'defined column filter "{key}" without column in {table}')
+        for name, column_filter in base_column_filters.items():
+            if table.base_columns.get(name) is None:
+                raise AttributeError(f'defined column filter "{name}" without column in {table}')
 
     @staticmethod
     def add_column_filters(base_column_filters, columns, table, model):
