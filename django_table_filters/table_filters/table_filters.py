@@ -200,10 +200,10 @@ class TableFilterMetaclass(type):
 
 class TableFilter(metaclass=TableFilterMetaclass):
 
-    def __init__(self, data, request, *args, **kwargs):
-        data = self.filter_data(self.mini_filtersets, request, data=None)
+    def __init__(self, *, data, request,):
+        self.data = self.filter_data(mini_filtersets=self.mini_filtersets, request=request, data=data)
 
-    def filter_data(self, mini_filtersets, request, data=None):
+    def filter_data(self, *, mini_filtersets, request, data):
         """
         it filters data
 
@@ -212,7 +212,7 @@ class TableFilter(metaclass=TableFilterMetaclass):
         :param data:
         :return data:
         """
-        for key, value in mini_filtersets.items():
-            mini_filterset_obj = value(request.GET, queryset=data)
+        for name, mini_filterset in mini_filtersets.items():
+            mini_filterset_obj = mini_filterset(request.GET, queryset=data)
             data = mini_filterset_obj.qs
         return data
