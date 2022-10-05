@@ -190,7 +190,7 @@ class TableFilterMetaclass(type):
         """
         mini_filtersets = {}
         for key, value in base_column_filters.items():
-            meta = type(str("Meta"), (object,), {"model": model})
+            meta = type(str("Meta"), (object,), {"model": model, "fields": []})
             attrs = {"Meta": meta}
             attrs.update(value.filters)
             mini_filterset = type(str("%s_MiniFilterSet" % key), (filterset.FilterSet,), attrs)
