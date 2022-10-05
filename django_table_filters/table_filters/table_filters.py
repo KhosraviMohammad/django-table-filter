@@ -84,7 +84,7 @@ class TableFilterOption:
             return None
 
         checks = {
-            (tuple, list, set): ["columns", "exclude"],
+            (tuple, list, set, str): ["columns", "exclude"],
             (type(Table),): ["table"],
         }
 
