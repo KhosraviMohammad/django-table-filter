@@ -113,7 +113,7 @@ class TableFilterMetaclass(type):
         base_column_filters = attrs['base_column_filters']
         cls.check_column_filters(base_column_filters, opt.table)
         cls.add_column_filters(base_column_filters, opt.columns, opt.table, opt.model)
-        cls.generate_mini_filtersets(base_column_filters, opt.model)
+        attrs['mini_filtersets'] = cls.generate_mini_filtersets(base_column_filters, opt.model)
         # it givs the class of TableFilter as object
         # then, assigned output to new class variable
         new_class = type.__new__(cls, name, bases, attrs)
