@@ -201,8 +201,9 @@ class TableFilterMetaclass(type):
 
 class TableFilter(metaclass=TableFilterMetaclass):
 
-    def __init__(self, *, data, request,):
-        self.data = self.filter_data(ColumnFilterSets=self.ColumnFilterSets, request=request, data=data)
+    def __init__(self, *, data, request, ):
+        self.data, self.column_filter_sets = self.filter_data(ColumnFilterSets=self.ColumnFilterSets, request=request,
+                                                              data=data)
 
     def filter_data(self, *, ColumnFilterSets, request, data):
         """
@@ -212,8 +213,11 @@ class TableFilter(metaclass=TableFilterMetaclass):
         :param request:
         :param data:
         :return data:
+        :return column_filter_sets:
         """
+        column_filter_sets = {}
         for name, ColumnFilterSet in ColumnFilterSets.items():
             column_filter_set = ColumnFilterSet(request.GET, queryset=data)
             data = column_filter_set.qs
-        return data
+            column_filter_sets.update({name: column_filter_set})
+        return data, column_filter_sets
