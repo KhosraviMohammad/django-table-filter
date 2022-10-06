@@ -202,8 +202,10 @@ class TableFilterMetaclass(type):
 class TableFilter(metaclass=TableFilterMetaclass):
 
     def __init__(self, *, data, request, ):
-        self.data, self.column_filter_sets = self.filter_data(ColumnFilterSets=self.ColumnFilterSets, request=request,
-                                                              data=data)
+        self.data = data
+        self._filtered_data, self.column_filter_sets = self.filter_data(ColumnFilterSets=self.ColumnFilterSets,
+                                                                        request=request,
+                                                                        data=data)
 
     def filter_data(self, *, ColumnFilterSets, request, data):
         """
@@ -221,3 +223,7 @@ class TableFilter(metaclass=TableFilterMetaclass):
             data = column_filter_set.qs
             column_filter_sets.update({name: column_filter_set})
         return data, column_filter_sets
+
+    @property
+    def filtered_data(self):
+        return self._filtered_data
