@@ -17,11 +17,10 @@ class Table(tables.Table, metaclass=TableMetaclass):
         table_filter_kwargs = kwargs
         table_kwargs['data'] = data
         self.request = request
-        if table_filter_activation and hasattr(type(self), 'table_filter'):
+        if table_filter_activation and hasattr(type(self), 'TableFilter'):
             if not isinstance(data, QuerySet):
                 raise TypeError(f'table_filter is true, so the data parm in {self} must be instance of QuerySet')
-            obj = self.table_filter(data=data, request=request, **table_filter_kwargs)
-            self.table_filter_obj = obj
+            self.table_filter = self.TableFilter(data=data, request=request, **table_filter_kwargs)
             super(Table, self).__init__(**table_kwargs)
         else:
             super(Table, self).__init__(**table_kwargs)
@@ -35,7 +34,7 @@ class Table(tables.Table, metaclass=TableMetaclass):
         :param table_filter:
         :return:
         """
-        table.table_filter = table_filter
+        table.TableFilter = table_filter
 
 
 def split_prams_function(func, kwargs: dict):
