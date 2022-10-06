@@ -113,7 +113,7 @@ class TableFilterMetaclass(type):
         base_column_filters = attrs['base_column_filters']
         cls.check_column_filters(base_column_filters, opt.table)
         cls.add_column_filters(base_column_filters, opt.columns, opt.table, opt.model)
-        attrs['mini_filtersets'] = cls.generate_mini_filtersets(base_column_filters, opt.model)
+        attrs['ColumnFilterSets'] = cls.generate_ColumnFilterSets(base_column_filters, opt.model)
         # it givs the class of TableFilter as object
         # then, assigned output to new class variable
         new_class = type.__new__(cls, name, bases, attrs)
@@ -180,39 +180,40 @@ class TableFilterMetaclass(type):
                 base_column_filters.update({column: column_filter})
 
     @staticmethod
-    def generate_mini_filtersets(base_column_filters, model):
+    def generate_ColumnFilterSets(base_column_filters, model):
         """
-        generate mini_filterset for each base_column_filters which is FilterSet
+        generate ColumnFilterSet for each base_column_filters which is FilterSet
 
         :param base_column_filters:
         :param model:
-        :return mini_filtersets:
+        :return ColumnFilterSet:
         """
-        mini_filtersets = {}
+
+        ColumnFilterSets = {}
         for key, value in base_column_filters.items():
             meta = type(str("Meta"), (object,), {"model": model, "fields": []})
             attrs = {"Meta": meta}
             attrs.update(value.filters)
-            mini_filterset = type(str("%s_MiniFilterSet" % key), (filterset.FilterSet,), attrs)
-            mini_filtersets.update({key: mini_filterset})
-        return mini_filtersets
+            ColumnFilterSet = type(str("%s_ColumnFilterSet" % key), (filterset.FilterSet,), attrs)
+            ColumnFilterSets.update({key: ColumnFilterSet})
+        return ColumnFilterSets
 
 
 class TableFilter(metaclass=TableFilterMetaclass):
 
     def __init__(self, *, data, request,):
-        self.data = self.filter_data(mini_filtersets=self.mini_filtersets, request=request, data=data)
+        self.data = self.filter_data(ColumnFilterSets=self.ColumnFilterSets, request=request, data=data)
 
-    def filter_data(self, *, mini_filtersets, request, data):
+    def filter_data(self, *, ColumnFilterSets, request, data):
         """
         it filters data
 
-        :param mini_filtersets:
+        :param ColumnFilterSets:
         :param request:
         :param data:
         :return data:
         """
-        for name, mini_filterset in mini_filtersets.items():
-            mini_filterset_obj = mini_filterset(request.GET, queryset=data)
-            data = mini_filterset_obj.qs
+        for name, ColumnFilterSet in ColumnFilterSets.items():
+            column_filter_set = ColumnFilterSet(request.GET, queryset=data)
+            data = column_filter_set.qs
         return data
