@@ -20,7 +20,9 @@ class Table(tables.Table, metaclass=TableMetaclass):
         if table_filter_activation and hasattr(type(self), 'TableFilter'):
             if not isinstance(data, QuerySet):
                 raise TypeError(f'table_filter is true, so the data parm in {self} must be instance of QuerySet')
-            self.table_filter = self.TableFilter(data=data, request=request, **table_filter_kwargs)
+            table_filter = self.TableFilter(data=data, request=request, **table_filter_kwargs)
+            self.table_filter = table_filter
+            table_kwargs['data'] = table_filter.filtered_data
             super(Table, self).__init__(**table_kwargs)
         else:
             super(Table, self).__init__(**table_kwargs)
