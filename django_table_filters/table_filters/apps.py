@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class TableFiltersConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'table_filters'
+    name = 'django_table_filters.table_filters'

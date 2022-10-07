@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django_tables2',
     'django_filters',
     # project apps
-    'django_table_filters.table_filters.apps',
+    'django_table_filters.table_filters.apps.TableFiltersConfig',
     'example',
     
 ]
