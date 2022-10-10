@@ -5,7 +5,7 @@ from example import models
 class LibraryTable(Table):
     class Meta:
         model = models.Library
-        template_name = 'django_tables2/bootstrap4.html'
+        template_name = 'django_table_filter/table/bootstrap4.html'
         fields = ['name', 'location', 'users']
 
 
