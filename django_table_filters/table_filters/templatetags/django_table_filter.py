@@ -20,6 +20,8 @@ class RenderTableFilterNode(Node):
         table_filter = table.table_filter
         column = self.column.resolve(context)
         column_filter_set = table_filter.column_filter_sets.get(column.name)
+        if column_filter_set is None:
+            return ''
         form = column_filter_set.form
         template_name = self.template_name.resolve(context)
         template = context.template.engine.get_template(template_name)
