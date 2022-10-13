@@ -18,7 +18,7 @@ def generate_column_filter(*, column, table, model, split_column_names, name_and
         last_model = fields_and_models[last_field]
         column_filter = ColumnFilter({filter_accessor: filters.ModelChoiceFilter(queryset=last_model.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))})
     elif isinstance(last_field, models.CharField):
-        column_filter = ColumnFilter({filter_accessor: filters.CharFilter(widget=forms.TextInput(attrs={'class': 'form-control'}))})
+        column_filter = ColumnFilter({filter_accessor: filters.CharFilter(lookup_expr='icontains', widget=forms.TextInput(attrs={'class': 'form-control'}))})
     elif isinstance(last_field, models.DateTimeField):
         filter_from = filters.DateTimeFilter(field_name=filter_accessor, lookup_expr='gte', widget=forms.DateTimeInput(attrs={'class': 'form-control'}))
         filter_to = filters.DateTimeFilter(field_name=filter_accessor, lookup_expr='lte', widget=forms.DateTimeInput(attrs={'class': 'form-control'}))
@@ -28,6 +28,6 @@ def generate_column_filter(*, column, table, model, split_column_names, name_and
         filter_to = filters.NumberFilter(field_name=filter_accessor, lookup_expr='lte', widget=forms.NumberInput(attrs={'class': 'form-control'}))
         column_filter = ColumnFilter({'number_from': filter_from, 'number_to': filter_to})
     elif isinstance(last_field, models.TextField):
-        text_filter = filters.CharFilter(field_name=filter_accessor, widget=forms.Textarea(attrs={'class': 'form-control'}))
+        text_filter = filters.CharFilter(field_name=filter_accessor, lookup_expr='icontains', widget=forms.Textarea(attrs={'class': 'form-control'}))
         column_filter = ColumnFilter({'text_filter': text_filter})
     return column_filter
