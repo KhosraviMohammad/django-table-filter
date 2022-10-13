@@ -1,10 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'main/base.html' %}
+{% load django_tables2 %}
 
-</body>
-</html>
+{% block content %}
+    <div class="card m-5  ">
+        <div class="card-body">
+            <div class="row ">
+                <div class="col">
+                    {% render_table table %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
