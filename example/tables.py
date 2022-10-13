@@ -16,9 +16,13 @@ class LibraryTableFilter(TableFilter):
 
 
 class BookTable(Table):
-
     class Meta:
         model = models.Book
         template_name = 'django_table_filter/table/bootstrap4.html'
         fields = ['name', 'code', 'Registration_Date', 'price', 'library', 'library__location']
 
+
+class BookTableFilter(TableFilter):
+    class Meta:
+        table = BookTable
+        columns = '__ALL__'
