@@ -12,3 +12,9 @@ def library_view(request):
         'table': table,
     }
     return render(request, template_name='example/library.html', context=context)
+
+
+def book_view(request):
+    context = {
+    }
+    return render(request, template_name='example/book.html', context=context)
