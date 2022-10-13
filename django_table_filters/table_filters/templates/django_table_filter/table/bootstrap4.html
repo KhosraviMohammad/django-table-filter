@@ -17,8 +17,9 @@
                                             {{ column.header }}
                                         {% endif %}
 
-                                            {% render_table_filter table column 'django_table_filter/table_filter/dropdown-filter.html' %}
-
+                                            {% if table.table_filter_activation %}
+                                                {% render_table_filter table column 'django_table_filter/table_filter/dropdown-filter.html' %}
+                                            {% endif %}
                                     </th>
 
                                 {% endfor %}

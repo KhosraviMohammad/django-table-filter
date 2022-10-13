@@ -17,6 +17,7 @@ class Table(tables.Table, metaclass=TableMetaclass):
         table_filter_kwargs = kwargs
         table_kwargs['data'] = data
         self.request = request
+        self.table_filter_activation = table_filter_activation
         if table_filter_activation and hasattr(type(self), 'TableFilter'):
             if not isinstance(data, QuerySet):
                 raise TypeError(f'table_filter is true, so the data parm in {self} must be instance of QuerySet')
