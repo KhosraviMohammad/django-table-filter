@@ -25,4 +25,4 @@ class BookTable(Table):
 class BookTableFilter(TableFilter):
     class Meta:
         table = BookTable
-        columns = '__ALL__'
+        columns = ['name', 'code', 'Registration_Date', 'price', 'library', 'library__location', 'library__users',]
