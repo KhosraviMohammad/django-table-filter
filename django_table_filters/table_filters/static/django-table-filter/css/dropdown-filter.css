@@ -1,0 +1,34 @@
+
+.open-filter-box {
+    font-size: inherit;
+    border-radius: 200%;
+    border-color: rgba(0, 0, 0, 0);
+    padding: 4px;
+    background: rgba(0, 0, 0, 0);
+}
+
+.open-filter-box:focus {
+    outline: 0 none;
+    outline-offset: 0;
+    box-shadow: 0 0 0 0.2rem #bfdbfe;
+
+}
+
+.open-filter-box:hover {
+    color: #343a40;
+    border-color: transparent;
+    background: #e9ecef;
+}
+
+.dropdown-filter-box {
+    position: relative;
+    display: inline-block;
+
+}
+
+.filter-box {
+    width: 200px;
+    position: absolute;
+    display: none;
+    z-index: 100;
+}
