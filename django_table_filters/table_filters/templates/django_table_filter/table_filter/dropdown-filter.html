@@ -1,9 +1,28 @@
+{% load static %}
 
-
-{% for field in form %}
-    <div class="row ">
-        <div class="col">
-            {{ field }}
-        </div>
+<nav class="dropdown-filter-box">
+    <button type="button" class="open-filter-box">
+        <img src="{% static 'django-table-filter/images/default-filter-icon.png' %}"/>
+    </button>
+    <div class="filter-box bg-white rounded p-4">
+            {% for field in form %}
+                <div class="row mt-2 mb-2">
+                    <div class="col">
+                        {{ field }}
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="row mt-4">
+                <div class="col">
+                    <button type="submit" class="btn btn-sm btn-primary">filter
+                    </button>
+                </div>
+                <div class="col"></div>
+                <div class="col">
+                    <button type="button" class="btn btn-sm btn-outline-primary eraser-button">
+                        eraser
+                    </button>
+                </div>
+            </div>
     </div>
-{% endfor %}
+</nav>

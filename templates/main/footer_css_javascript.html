@@ -1,1 +1,56 @@
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+{% load static %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8"
+        crossorigin="anonymous"></script>
+
+<script>
+
+
+    function onOpen(e, dropDownFilterBox, filterBox, openFilterBox) {
+        $(filterBox).slideDown('fast');
+        $(openFilterBox).css('box-shadow', '0 0 0 0.2rem #bfdbfe');
+    }
+
+    function onBackValue(e, dropDownFilterBox, filterBox, openFilterBox) {
+        let defaultInputValue = dropDownFilterBox[0].dropDownFilter.defaultInputValue
+        let inputFilters = $(dropDownFilterBox).find('.input-filter');
+        for (const inputFilter of inputFilters) {
+            let inputName = $(inputFilter).attr('name');
+            $(inputFilter).val(defaultInputValue[inputName]);
+        }
+    }
+
+    function onEraser(e, dropDownFilterBox, filterBox, openFilterBox) {
+        dropDownFilterBox.find('.input-filter').val('');
+    }
+
+    function onClose(e, dropDownFilterBox, filterBox, openFilterBox) {
+        $(filterBox).slideUp('fast');
+        $(openFilterBox).css('box-shadow', 'none');
+    }
+
+    $(function () {
+        let dropdownFilterBoxs = $('.dropdown-filter-box');
+        dropdownFilterBoxs.DropdownFilter({
+            onOpen: onOpen,
+            onClose: onClose,
+            onEraser: onEraser,
+            onBackValue: onBackValue
+        });
+        $.each(dropdownFilterBoxs, function (index, dropdownFilterBox) {
+            let inputFilters = $(dropdownFilterBox).find('.input-filter');
+            for (const inputFilter of inputFilters) {
+                let inputValue = $(inputFilter).val();
+                let inputName = $(inputFilter).attr('name');
+                dropdownFilterBox.dropDownFilter.defaultInputValue = {name: inputName, value: inputValue};
+                if (inputValue.length != 0) {
+                    const blueFilterIcon = '<img src="{% static 'django-table-filter/images/blue-filter-icon.png'%}"/>';
+                    $(dropdownFilterBox).find('.open-filter-box').html(blueFilterIcon);
+                }
+
+            }
+        })
+
+    })
+</script>
