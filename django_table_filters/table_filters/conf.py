@@ -2,6 +2,7 @@ from django.db import models
 from django_filters import filters
 from .column_filters import ColumnFilter
 from django import forms
+from django.conf import settings
 
 
 def generate_column_filter(*, column, table, model, split_column_names, name_and_fields, fields_and_models):
@@ -31,3 +32,10 @@ def generate_column_filter(*, column, table, model, split_column_names, name_and
         text_filter = filters.CharFilter(field_name=filter_accessor, lookup_expr='icontains', widget=forms.Textarea(attrs={'class': 'form-control input-filter'}))
         column_filter = ColumnFilter({'text_filter': text_filter})
     return column_filter
+
+
+if hasattr(settings, 'GENERATE_COLUMN_FILTER'):
+    GENERATE_COLUMN_FILTER = settings.GENERATE_COLUMN_FILTER
+else:
+    GENERATE_COLUMN_FILTER = generate_column_filter
+
