@@ -30,8 +30,8 @@ class DropdownFilter {
         let thisObject = this;
         $(openFilterBox).click(function (e) {
             if (filterBox.is(":visible")) {
-                thisObject.onClose(e, dropDownFilterBox, filterBox, openFilterBox);
                 thisObject.onBackValue(e, dropDownFilterBox, filterBox, openFilterBox);
+                thisObject.onClose(e, dropDownFilterBox, filterBox, openFilterBox);
             } else {
                 thisObject.onOpen(e, dropDownFilterBox, filterBox, openFilterBox);
             }
@@ -67,9 +67,10 @@ class DropdownFilter {
         let thisObject = this;
         $(document).click(function (e) {
             let targetElement = $(e.target)
-            if (dropDownFilterBox !== targetElement && !dropDownFilterBox.has(targetElement).length) {
-                thisObject.onClose(e, dropDownFilterBox, filterBox, openFilterBox);
+            if (dropDownFilterBox !== targetElement && !dropDownFilterBox.has(targetElement).length && filterBox.is(":visible")) {
                 thisObject.onBackValue(e, dropDownFilterBox, filterBox, openFilterBox);
+                thisObject.onClose(e, dropDownFilterBox, filterBox, openFilterBox);
+
             }
         })
     }
