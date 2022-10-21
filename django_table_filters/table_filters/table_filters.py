@@ -30,46 +30,6 @@ class TableFilterOption:
         self.columns = getattr(options, 'columns', [])
         self.exclude = getattr(options, 'exclude', [])
 
-    def set__ALL__(self, list_object: list, base_columns, model):
-        """
-        it finds all possible columns in base_columns and set them to list_object
-        possible column is the column in table that exist as field in model
-        possible column:
-            it is 'table.name_column == model.name_field'
-
-
-        :param list_object:
-        :param base_columns:
-        :param model:
-        :return:
-        """
-        try:
-            for name, column in base_columns.items():
-                fields = utils.get_fields_from_path(model, name)
-                if len(fields) > 0:
-                    list_object.append(name)
-        except exceptions.FieldDoesNotExist:
-            pass
-
-    def _check_column_and_exclude(self, columns, exclude, table, class_name):
-        """
-        it checks column and exclude with column in table
-        if required column does not exist in table then it raises AttributeError
-
-        :param columns:
-        :param exclude:
-        :param table:
-        :param class_name:
-        :return:
-        """
-
-        for item in columns:
-            if table.base_columns.get(item) is None:
-                raise AttributeError(f'defined column "{item}" in {class_name}.Meta.columns without column in {table}')
-
-        for item in exclude:
-            if table.base_columns.get(item) is None:
-                raise AttributeError(f'excluded column "{item}" in {class_name}.Meta.exclude without column in {table}')
 
     def _check_types(self, options, class_name):
         """
@@ -197,7 +157,7 @@ class TableFilterMetaclass(type):
         elif model is None:
             raise NotImplementedError(f'{class_name}.Meta.table does not have model')
 
-        cls._check_column_and_exclude()
+        cls._check_column_and_exclude(columns=columns, exclude=exclude, table=table, class_name=class_name)
 
         ALL_COLUMNS = '__ALL__'
 
@@ -205,7 +165,7 @@ class TableFilterMetaclass(type):
             columns = ALL_COLUMNS
 
         if columns == ALL_COLUMNS:
-            columns = cls.set__ALL__()
+            columns = cls.set__ALL__(list_name=[], table_base_columns=table.base_columns, model=model)
 
         column_filters = OrderedDict()
 
@@ -226,6 +186,49 @@ class TableFilterMetaclass(type):
                                                         fields_and_models=fields_and_models)
             column_filters.update({column: column_filter})
         return column_filters
+
+    def set__ALL__(cls, *, list_name: list, table_base_columns, model):
+        """
+        it finds all possible columns in base_columns and set them to list_object
+        possible column is the column in table that exist as field in model
+        possible column:
+            it is 'table.name_column == model.name_field'
+
+
+        :param list_name:
+        :param table_base_columns:
+        :param model:
+        :return:
+        """
+        try:
+            for name, column in table_base_columns.items():
+                fields = utils.get_fields_from_path(model, name)
+                if len(fields) > 0:
+                    list_name.append(name)
+        except exceptions.FieldDoesNotExist:
+            pass
+
+        return list_name
+
+    def _check_column_and_exclude(cls, *, columns, exclude, table, class_name):
+        """
+        it checks column and exclude with column in table
+        if required column does not exist in table then it raises AttributeError
+
+        :param columns:
+        :param exclude:
+        :param table:
+        :param class_name:
+        :return:
+        """
+
+        for item in columns:
+            if table.base_columns.get(item) is None:
+                raise AttributeError(f'defined column "{item}" in {class_name}.Meta.columns without column in {table}')
+
+        for item in exclude:
+            if table.base_columns.get(item) is None:
+                raise AttributeError(f'excluded column "{item}" in {class_name}.Meta.exclude without column in {table}')
 
     @staticmethod
     def generate_ColumnFilterSets(base_column_filters, model):
