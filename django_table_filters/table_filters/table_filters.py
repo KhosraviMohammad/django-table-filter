@@ -61,12 +61,13 @@ class TableFilterMetaclass(type):
         attrs['_meta'] = opt = TableFilterOption(options=attrs.get('Meta'), class_name=name)
         attrs["declared_column_filters"] = declared_column_filters = cls.get_declared_column_filters(
             bases=bases, attrs=attrs)
+        cls.check_declared_column_filters(declared_column_filters=declared_column_filters, table=opt.table)
         attrs["generated_column_filters"] = generated_column_filters = cls.get_generated_column_filters(
             columns=opt.columns, exclude=opt.exclude, model=opt.model, table=opt.table, class_name=name)
         attrs["base_column_filters"] = base_column_filters = cls.get_base_column_filters(
             declared_column_filters=declared_column_filters, generated_column_filters=generated_column_filters)
 
-        cls.check_column_filters(base_column_filters, opt.table)
+
         attrs['ColumnFilterSets'] = cls.generate_ColumnFilterSets(base_column_filters, opt.model)
         # it givs the class of TableFilter as object
         # then, assigned output to new class variable
@@ -112,7 +113,6 @@ class TableFilterMetaclass(type):
 
         return OrderedDict(base_column_filters + column_filters)
 
-
     def get_base_column_filters(cls, declared_column_filters, generated_column_filters):
         """
         it connects declared_column_filters and generated_column_filters at base_column_filters and return it
@@ -126,17 +126,17 @@ class TableFilterMetaclass(type):
         return base_column_filters
 
     @staticmethod
-    def check_column_filters(base_column_filters, table):
+    def check_declared_column_filters(*, declared_column_filters, table):
         """
         it checks column filter with column in table
 
-        :param base_column_filters:
+        :param declared_column_filters:
         :param table:
         :return:
         """
-        for name, column_filter in base_column_filters.items():
+        for name, column_filter in declared_column_filters.items():
             if table.base_columns.get(name) is None:
-                raise AttributeError(f'defined column filter "{name}" without column in {table}')
+                raise AttributeError(f'defined column filter "{name}" without defining this column "{name}" in {table}')
 
     def get_generated_column_filters(cls, *, columns, exclude, table, model, class_name):
         """
