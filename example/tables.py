@@ -12,7 +12,7 @@ class LibraryTable(Table):
 class LibraryTableFilter(TableFilter):
     class Meta:
         table = LibraryTable
-        columns = ['name']
+        exclude = ['location']
 
 
 class BookTable(Table):
