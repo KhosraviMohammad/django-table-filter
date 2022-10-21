@@ -15,24 +15,22 @@ class TableFilterOption:
     """
 
     def __init__(self, *, options, class_name):
-        if not hasattr(options, 'table'):
-            raise AttributeError(f'{class_name}.Meta without table')
-
+        # Options is got from Table.Filter.Meta that given to this method to check type of
+        # specific attributes which are required as option for Table.Filter._meta
         self._check_types(options, class_name)
 
-        self.table = getattr(options, 'table')
-        if hasattr(self.table.Meta, 'model'):
-            self.model = getattr(self.table.Meta, 'model')
+        self.table = getattr(options, 'table', None)
+        if self.table is not None:
+            self.model = getattr(self.table._meta, 'model', None)
         else:
-            AttributeError(f'{class_name}.Meta.table = "{self.table}" without model')
+            self.model = None
+
         self.columns = getattr(options, 'columns', [])
         self.exclude = getattr(options, 'exclude', [])
-        if self.columns == '__ALL__':
-            self.columns = []
-            self.set__ALL__(self.columns, self.table.base_columns, self.model)
-        if self.exclude == '__ALL__':
-            self.exclude = []
-            self.set__ALL__(self.exclude, self.table.base_columns, self.model)
+        self.possible_columns = []
+        if self.model:
+            self.set__ALL__(self.possible_columns, self.table.base_columns, self.model)
+
         self._check_column_and_exclude(self.columns, self.exclude, self.table, class_name)
 
     def set__ALL__(self, list_object: list, base_columns, model):
