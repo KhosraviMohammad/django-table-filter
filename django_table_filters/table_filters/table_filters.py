@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from .tables import Table
 from .column_filters import ColumnFilter
 from django.contrib.admin import utils
@@ -97,6 +99,7 @@ class TableFilterOption:
 class TableFilterMetaclass(type):
     def __new__(cls, name, bases, attrs):
         attrs['_meta'] = opt = TableFilterOption(options=attrs.get('Meta'), class_name=name)
+        attrs["declared_column_filters"] = cls.get_declared_column_filters(bases, attrs)
         cls.set_base_column_filters(attrs)
         base_column_filters = attrs['base_column_filters']
         cls.check_column_filters(base_column_filters, opt.table)
@@ -109,6 +112,42 @@ class TableFilterMetaclass(type):
         # after it sets TableFilter to Table
         Table.set_table_filter(opt.table, new_class)
         return new_class
+
+
+    @staticmethod
+    def get_declared_column_filters(bases, attrs):
+        '''
+        this method finds column_filters which are declared in TableFilter class
+
+        :param bases:
+        :param attrs:
+        :return:
+        '''
+        column_filters = [
+            (column_filter_name, attrs.pop(column_filter_name))
+            for column_filter_name, obj in list(attrs.items())
+            if isinstance(obj, ColumnFilter)
+        ]
+
+        for column_filter_name, column_filter in column_filters:
+            if getattr(column_filter, "column_filter_name", None) is None:
+                column_filter.column_filter_name = column_filter_name
+
+        known = set(attrs)
+
+        def visit(name):
+            known.add(name)
+            return name
+
+        base_column_filters = [
+            (visit(column_filter_name), column_filter)
+            for base in bases
+            if hasattr(base, "declared_column_filters")
+            for column_filter_name, column_filter in base.declared_column_filters.items()
+            if column_filter_name not in known
+        ]
+
+        return OrderedDict(base_column_filters + column_filters)
 
     @staticmethod
     def set_base_column_filters(attrs):
