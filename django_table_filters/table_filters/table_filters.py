@@ -169,7 +169,7 @@ class TableFilterMetaclass(type):
 
         if columns == ALL_COLUMNS:
             all_columns = mcs.set__ALL__(list_name=[], table_base_columns=table.base_columns, model=model)
-            columns = all_columns - exclude
+            columns = list(set(all_columns) - set(exclude))
 
         column_filters = OrderedDict()
 
