@@ -19,7 +19,7 @@ class TableFilterOption:
     def __init__(self, *, options, class_name):
         # Options is got from Table.Filter.Meta that given to this method to check type of
         # specific attributes which are required as option for Table.Filter._meta
-        self._check_types(options, class_name)
+        self._check_types(options=options, class_name=class_name)
 
         self.table = getattr(options, 'table', None)
         if self.table is not None:
@@ -30,8 +30,7 @@ class TableFilterOption:
         self.columns = getattr(options, 'columns', [])
         self.exclude = getattr(options, 'exclude', [])
 
-
-    def _check_types(self, options, class_name):
+    def _check_types(self, *, options, class_name):
         """
         Check class Meta attributes to prevent common mistakes.
         """
@@ -66,7 +65,7 @@ class TableFilterMetaclass(type):
             columns=opt.columns, exclude=opt.exclude, model=opt.model, table=opt.table, class_name=name)
         attrs["base_column_filters"] = base_column_filters = mcs.get_base_column_filters(
             declared_column_filters=declared_column_filters, generated_column_filters=generated_column_filters)
-        attrs['ColumnFilterSets'] = mcs.generate_ColumnFilterSets(base_column_filters, opt.model)
+        attrs['ColumnFilterSets'] = mcs.generate_ColumnFilterSets(base_column_filters=base_column_filters, model=opt.model)
 
         # it givs the class of TableFilter as object
         # then, assigned output to new class variable
@@ -77,8 +76,7 @@ class TableFilterMetaclass(type):
 
         return new_class
 
-    @staticmethod
-    def get_declared_column_filters(bases, attrs):
+    def get_declared_column_filters(cls, *, bases, attrs):
         '''
         this method finds column_filters which are declared in TableFilter class
 
@@ -113,7 +111,7 @@ class TableFilterMetaclass(type):
 
         return OrderedDict(base_column_filters + column_filters)
 
-    def get_base_column_filters(cls, declared_column_filters, generated_column_filters):
+    def get_base_column_filters(cls, *, declared_column_filters, generated_column_filters):
         """
         it connects declared_column_filters and generated_column_filters at base_column_filters and return it
 
@@ -125,8 +123,7 @@ class TableFilterMetaclass(type):
         base_column_filters.update(generated_column_filters)
         return base_column_filters
 
-    @staticmethod
-    def check_declared_column_filters(*, declared_column_filters, table):
+    def check_declared_column_filters(cls, *, declared_column_filters, table):
         """
         it checks column filter with column in table
 
@@ -229,8 +226,8 @@ class TableFilterMetaclass(type):
             if table.base_columns.get(item) is None:
                 raise AttributeError(f'excluded column "{item}" in {class_name}.Meta.exclude without column in {table}')
 
-    @staticmethod
-    def generate_ColumnFilterSets(base_column_filters, model):
+
+    def generate_ColumnFilterSets(cls, *, base_column_filters, model):
         """
         generate ColumnFilterSet for each base_column_filters which is FilterSet
 
