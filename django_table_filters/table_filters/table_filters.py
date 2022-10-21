@@ -27,11 +27,6 @@ class TableFilterOption:
 
         self.columns = getattr(options, 'columns', [])
         self.exclude = getattr(options, 'exclude', [])
-        self.possible_columns = []
-        if self.model:
-            self.set__ALL__(self.possible_columns, self.table.base_columns, self.model)
-
-        self._check_column_and_exclude(self.columns, self.exclude, self.table, class_name)
 
     def set__ALL__(self, list_object: list, base_columns, model):
         """
