@@ -150,8 +150,10 @@ class TableFilterMetaclass(type):
         :param class_name:
         :return:
         """
+        if len(exclude) == 0 and len(columns) == 0:
+            return OrderedDict()
 
-        if table is None:
+        elif table is None:
             raise NotImplementedError(f'{class_name}.Meta.columns or {class_name}.Meta.columns exclude'
                                       f' without {class_name}.Meta.table')
         elif model is None:
@@ -161,11 +163,12 @@ class TableFilterMetaclass(type):
 
         ALL_COLUMNS = '__ALL__'
 
-        if len(exclude) != 0 and len(columns) != 0:
+        if len(exclude) != 0 and len(columns) == 0:
             columns = ALL_COLUMNS
 
         if columns == ALL_COLUMNS:
-            columns = mcs.set__ALL__(list_name=[], table_base_columns=table.base_columns, model=model)
+            all_columns = mcs.set__ALL__(list_name=[], table_base_columns=table.base_columns, model=model)
+            columns = all_columns - exclude
 
         column_filters = OrderedDict()
 
