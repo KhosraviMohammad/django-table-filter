@@ -76,7 +76,8 @@ class TableFilterMetaclass(type):
 
         return new_class
 
-    def get_declared_column_filters(cls, *, bases, attrs):
+    @classmethod
+    def get_declared_column_filters(mcs, *, bases, attrs):
         '''
         this method finds column_filters which are declared in TableFilter class
 
@@ -111,7 +112,8 @@ class TableFilterMetaclass(type):
 
         return OrderedDict(base_column_filters + column_filters)
 
-    def get_base_column_filters(cls, *, declared_column_filters, generated_column_filters):
+    @classmethod
+    def get_base_column_filters(mcs, *, declared_column_filters, generated_column_filters):
         """
         it connects declared_column_filters and generated_column_filters at base_column_filters and return it
 
@@ -123,7 +125,8 @@ class TableFilterMetaclass(type):
         base_column_filters.update(generated_column_filters)
         return base_column_filters
 
-    def check_declared_column_filters(cls, *, declared_column_filters, table):
+    @classmethod
+    def check_declared_column_filters(mcs, *, declared_column_filters, table):
         """
         it checks column filter with column in table
 
@@ -135,7 +138,8 @@ class TableFilterMetaclass(type):
             if table.base_columns.get(name) is None:
                 raise AttributeError(f'defined column filter "{name}" without defining this column "{name}" in {table}')
 
-    def get_generated_column_filters(cls, *, columns, exclude, table, model, class_name):
+    @classmethod
+    def get_generated_column_filters(mcs, *, columns, exclude, table, model, class_name):
         """
         it makes columnFilter ready for columns from params then return
 
@@ -153,7 +157,7 @@ class TableFilterMetaclass(type):
         elif model is None:
             raise NotImplementedError(f'{class_name}.Meta.table does not have model')
 
-        cls._check_column_and_exclude(columns=columns, exclude=exclude, table=table, class_name=class_name)
+        mcs._check_column_and_exclude(columns=columns, exclude=exclude, table=table, class_name=class_name)
 
         ALL_COLUMNS = '__ALL__'
 
@@ -161,7 +165,7 @@ class TableFilterMetaclass(type):
             columns = ALL_COLUMNS
 
         if columns == ALL_COLUMNS:
-            columns = cls.set__ALL__(list_name=[], table_base_columns=table.base_columns, model=model)
+            columns = mcs.set__ALL__(list_name=[], table_base_columns=table.base_columns, model=model)
 
         column_filters = OrderedDict()
 
@@ -183,7 +187,8 @@ class TableFilterMetaclass(type):
             column_filters.update({column: column_filter})
         return column_filters
 
-    def set__ALL__(cls, *, list_name: list, table_base_columns, model):
+    @classmethod
+    def set__ALL__(mcs, *, list_name: list, table_base_columns, model):
         """
         it finds all possible columns in base_columns and set them to list_object
         possible column is the column in table that exist as field in model
@@ -206,7 +211,8 @@ class TableFilterMetaclass(type):
 
         return list_name
 
-    def _check_column_and_exclude(cls, *, columns, exclude, table, class_name):
+    @classmethod
+    def _check_column_and_exclude(mcs, *, columns, exclude, table, class_name):
         """
         it checks column and exclude with column in table
         if required column does not exist in table then it raises AttributeError
@@ -226,8 +232,8 @@ class TableFilterMetaclass(type):
             if table.base_columns.get(item) is None:
                 raise AttributeError(f'excluded column "{item}" in {class_name}.Meta.exclude without column in {table}')
 
-
-    def generate_ColumnFilterSets(cls, *, base_column_filters, model):
+    @classmethod
+    def generate_ColumnFilterSets(mcs, *, base_column_filters, model):
         """
         generate ColumnFilterSet for each base_column_filters which is FilterSet
 
