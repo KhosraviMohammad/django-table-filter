@@ -57,24 +57,24 @@ class TableFilterOption:
 
 
 class TableFilterMetaclass(type):
-    def __new__(cls, name, bases, attrs):
+    def __new__(mcs, name, bases, attrs):
         attrs['_meta'] = opt = TableFilterOption(options=attrs.get('Meta'), class_name=name)
-        attrs["declared_column_filters"] = declared_column_filters = cls.get_declared_column_filters(
+        attrs["declared_column_filters"] = declared_column_filters = mcs.get_declared_column_filters(
             bases=bases, attrs=attrs)
-        cls.check_declared_column_filters(declared_column_filters=declared_column_filters, table=opt.table)
-        attrs["generated_column_filters"] = generated_column_filters = cls.get_generated_column_filters(
+        mcs.check_declared_column_filters(declared_column_filters=declared_column_filters, table=opt.table)
+        attrs["generated_column_filters"] = generated_column_filters = mcs.get_generated_column_filters(
             columns=opt.columns, exclude=opt.exclude, model=opt.model, table=opt.table, class_name=name)
-        attrs["base_column_filters"] = base_column_filters = cls.get_base_column_filters(
+        attrs["base_column_filters"] = base_column_filters = mcs.get_base_column_filters(
             declared_column_filters=declared_column_filters, generated_column_filters=generated_column_filters)
+        attrs['ColumnFilterSets'] = mcs.generate_ColumnFilterSets(base_column_filters, opt.model)
 
-
-        attrs['ColumnFilterSets'] = cls.generate_ColumnFilterSets(base_column_filters, opt.model)
         # it givs the class of TableFilter as object
         # then, assigned output to new class variable
-        new_class = type.__new__(cls, name, bases, attrs)
+        new_class = type.__new__(mcs, name, bases, attrs)
         # this gets two params, one is Table class and another one is TableFilter Class
         # after it sets TableFilter to Table
         Table.set_table_filter(opt.table, new_class)
+
         return new_class
 
     @staticmethod
