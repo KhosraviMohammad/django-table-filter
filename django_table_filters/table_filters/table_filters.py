@@ -59,12 +59,13 @@ class TableFilterOption:
 class TableFilterMetaclass(type):
     def __new__(cls, name, bases, attrs):
         attrs['_meta'] = opt = TableFilterOption(options=attrs.get('Meta'), class_name=name)
-        attrs["declared_column_filters"] = cls.get_declared_column_filters(bases=bases, attrs=attrs)
-        attrs["generated_column_filters"] = cls.get_generated_column_filters(columns=opt.columns, exclude=opt.exclude,
-                                                                             model=opt.model, table=opt.table,
-                                                                             class_name=name)
-        cls.set_base_column_filters(attrs)
-        base_column_filters = attrs['base_column_filters']
+        attrs["declared_column_filters"] = declared_column_filters = cls.get_declared_column_filters(
+            bases=bases, attrs=attrs)
+        attrs["generated_column_filters"] = generated_column_filters = cls.get_generated_column_filters(
+            columns=opt.columns, exclude=opt.exclude, model=opt.model, table=opt.table, class_name=name)
+        attrs["base_column_filters"] = base_column_filters = cls.get_base_column_filters(
+            declared_column_filters=declared_column_filters, generated_column_filters=generated_column_filters)
+
         cls.check_column_filters(base_column_filters, opt.table)
         attrs['ColumnFilterSets'] = cls.generate_ColumnFilterSets(base_column_filters, opt.model)
         # it givs the class of TableFilter as object
@@ -75,7 +76,6 @@ class TableFilterMetaclass(type):
         Table.set_table_filter(opt.table, new_class)
         return new_class
 
-
     @staticmethod
     def get_declared_column_filters(bases, attrs):
         '''
@@ -85,6 +85,7 @@ class TableFilterMetaclass(type):
         :param attrs:
         :return:
         '''
+
         column_filters = [
             (column_filter_name, attrs.pop(column_filter_name))
             for column_filter_name, obj in list(attrs.items())
@@ -111,20 +112,18 @@ class TableFilterMetaclass(type):
 
         return OrderedDict(base_column_filters + column_filters)
 
-    @staticmethod
-    def set_base_column_filters(attrs):
+
+    def get_base_column_filters(cls, declared_column_filters, generated_column_filters):
         """
-        it finds ColumnFilter instance and sets them to "base_column_filters"
+        it connects declared_column_filters and generated_column_filters at base_column_filters and return it
 
         :param attrs:
         :return:
         """
-        base_column_filters = {}
-        for key, value in attrs.items():
-            if isinstance(value, ColumnFilter):
-                base_column_filters[key] = value
-                del attrs[key]
-        attrs['base_column_filters'] = base_column_filters
+        base_column_filters = OrderedDict()
+        base_column_filters.update(declared_column_filters)
+        base_column_filters.update(generated_column_filters)
+        return base_column_filters
 
     @staticmethod
     def check_column_filters(base_column_filters, table):
