@@ -96,11 +96,6 @@ class TableFilterOption:
 
 class TableFilterMetaclass(type):
     def __new__(cls, name, bases, attrs):
-        if attrs['__module__'] + '.' + name == 'django_table_filters.table_filters.table_filters.TableFilter':
-            new_class = type.__new__(cls, name, bases, attrs)
-            return new_class
-        if attrs.get('Meta') is None:
-            raise AttributeError(f'{name} without Meta class')
         attrs['_meta'] = opt = TableFilterOption(options=attrs.get('Meta'), class_name=name)
         cls.set_base_column_filters(attrs)
         base_column_filters = attrs['base_column_filters']
