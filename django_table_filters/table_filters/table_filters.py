@@ -72,7 +72,8 @@ class TableFilterMetaclass(type):
         new_class = type.__new__(mcs, name, bases, attrs)
         # this gets two params, one is Table class and another one is TableFilter Class
         # after it sets TableFilter to Table
-        Table.set_table_filter(opt.table, new_class)
+        if opt.table is not None:
+            Table.set_table_filter(opt.table, new_class)
 
         return new_class
 
