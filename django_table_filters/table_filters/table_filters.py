@@ -122,8 +122,8 @@ class TableFilterMetaclass(type):
         :return:
         """
         base_column_filters = OrderedDict()
-        base_column_filters.update(declared_column_filters)
         base_column_filters.update(generated_column_filters)
+        base_column_filters.update(declared_column_filters)
         return base_column_filters
 
     @classmethod
