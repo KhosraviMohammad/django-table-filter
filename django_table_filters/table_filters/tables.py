@@ -12,32 +12,19 @@ class TableMetaclass(tables.DeclarativeColumnsMetaclass):
 
 class Table(tables.Table, metaclass=TableMetaclass):
 
-    def __init__(self, *, request, data, table_filter_activation=False, **kwargs):
-        table_kwargs = split_prams_function(super(Table, self).__init__, kwargs=kwargs)
-        table_filter_kwargs = kwargs
-        table_kwargs['data'] = data
-        self.request = request
-        self.table_filter_activation = table_filter_activation
-        if table_filter_activation and hasattr(type(self), 'TableFilter'):
-            if not isinstance(data, QuerySet):
-                raise TypeError(f'table_filter is true, so the data parm in {self} must be instance of QuerySet')
-            table_filter = self.TableFilter(data=data, request=request, **table_filter_kwargs)
-            self.table_filter = table_filter
-            table_kwargs['data'] = table_filter.filtered_data
-            super(Table, self).__init__(**table_kwargs)
+    def __init__(self, *, request, data=None, table_filter=None, **kwargs):
+        self.table_filter = table_filter
+
+        if table_filter is not None:
+            self.table_filter_activation = True
+            data = table_filter.filtered_data
+        elif data is not None:
+            self.table_filter_activation = False
         else:
-            super(Table, self).__init__(**table_kwargs)
+            assert data is not None, f'in {type(self)}.__init__ one of parameters "data or table_filter" is required'
 
-    @staticmethod
-    def set_table_filter(table, table_filter):
-        """
-        it sets table_filter as attribute to table.table_filter
+        super(Table, self).__init__(request=request, data=data, **kwargs)
 
-        :param table:
-        :param table_filter:
-        :return:
-        """
-        table.TableFilter = table_filter
 
 
 def split_prams_function(func, kwargs: dict):

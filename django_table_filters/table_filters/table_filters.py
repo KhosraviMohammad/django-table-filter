@@ -67,15 +67,7 @@ class TableFilterMetaclass(type):
             declared_column_filters=declared_column_filters, generated_column_filters=generated_column_filters)
         attrs['ColumnFilterSets'] = mcs.generate_ColumnFilterSets(base_column_filters=base_column_filters, model=opt.model)
 
-        # it givs the class of TableFilter as object
-        # then, assigned output to new class variable
-        new_class = type.__new__(mcs, name, bases, attrs)
-        # this gets two params, one is Table class and another one is TableFilter Class
-        # after it sets TableFilter to Table
-        if opt.table is not None:
-            Table.set_table_filter(opt.table, new_class)
-
-        return new_class
+        return type.__new__(mcs, name, bases, attrs)
 
     @classmethod
     def get_declared_column_filters(mcs, *, bases, attrs):
@@ -258,7 +250,7 @@ class TableFilterMetaclass(type):
 
 class TableFilter(metaclass=TableFilterMetaclass):
 
-    def __init__(self, *, data, request, ):
+    def __init__(self, *, request, data,):
         self.data = data
         self._filtered_data, self.column_filter_sets = self.filter_data(ColumnFilterSets=self.ColumnFilterSets,
                                                                         request=request,

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .tables import LibraryTable, BookTable
+from .tables import LibraryTable, BookTable, LibraryTableFilter, BookTableFilter
 from . import models
 
 
@@ -7,16 +7,18 @@ from . import models
 
 def library_view(request):
     library_qs = models.Library.objects.prefetch_related('users').all()
-    table = LibraryTable(data=library_qs, table_filter_activation=True, request=request)
+    library_table_filter = BookTableFilter(request=request, data=library_qs)
+    library_table = LibraryTable(request=request, table_filter=library_table_filter)
     context = {
-        'table': table,
+        'table': library_table,
     }
     return render(request, template_name='example/library.html', context=context)
 
 
 def book_view(request):
     book_qs = models.Book.objects.select_related('library').all()
-    book_table = BookTable(data=book_qs, request=request, table_filter_activation=True)
+    book_table_filter = BookTableFilter(request=request, data=book_qs)
+    book_table = BookTable(request=request, table_filter=book_table_filter)
     context = {
         'table': book_table
     }
