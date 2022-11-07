@@ -28,5 +28,5 @@ You can read abute django-filter here: https://django-filter.readthedocs.io/en/s
 
 ### example
 
-there are some examples from example app in this repostory which shows you how to use this package
+there are some examples in example app from this repostory which shows you how to use this package
 
