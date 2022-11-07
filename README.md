@@ -4,17 +4,18 @@ django-table-filter is a table from django-tables2 with filters for each column 
 
 It can be customized or automatically generated
 
-```
-warning: Currently, it is not recommended to use the package. because it is not stable
-```
-
 ### Quick start
 
 ```
 1- git clone https://github.com/KhosraviMohammad/django-table-filter.git
 ```
+
 ```
-2- pip install django-tables2
+2- python manage.py migrate
+```
+
+```
+3- pip install django-tables2
 ```
 
 You can read abute django-tabls2 here: https://django-tables2.readthedocs.io/en/latest/pages/tutorial.
