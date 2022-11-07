@@ -3,7 +3,6 @@
     <div class="table-container">
         {% block table %}
             <form action="">
-            <input type="submit" class="btn btn-primary" value="filter">
                 <table {% render_attrs table.attrs class="table" %}>
                     {% block table.thead %}
                         {% if table.show_header %}
