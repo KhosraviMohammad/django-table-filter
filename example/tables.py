@@ -25,11 +25,14 @@ class BookTable(Table):
 
 
 class BookTableFilter(TableFilter):
+    name = ColumnFilter({
+        'name': filters.CharFilter(lookup_expr='icontains', widget=forms.TextInput(attrs={'class': 'form-control input-filter bg-light'})),
+    })
     price = ColumnFilter({
-        'price_from': filters.NumberFilter(field_name='price', lookup_expr='gte', widget=forms.NumberInput(attrs={'class': 'form-control input-filter', 'placeholder': 'from'})),
-        'price_to': filters.NumberFilter(field_name='price', lookup_expr='lte', widget=forms.NumberInput(attrs={'class': 'form-control input-filter', 'placeholder': 'to'})),
+        'price_from': filters.NumberFilter(field_name='price', lookup_expr='gte', widget=forms.NumberInput(attrs={'class': 'form-control input-filter bg-light', 'placeholder': 'from'})),
+        'price_to': filters.NumberFilter(field_name='price', lookup_expr='lte', widget=forms.NumberInput(attrs={'class': 'form-control input-filter bg-light', 'placeholder': 'to'})),
     })
 
     class Meta:
         table = BookTable
-        columns = ['name', 'code', 'Registration_Date', 'library', 'library__location', 'library__users', ]
+        columns = ['name', 'code', 'price', 'Registration_Date', 'library', 'library__location', 'library__users', ]
