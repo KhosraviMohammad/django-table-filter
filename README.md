@@ -18,17 +18,17 @@ It can be customized or automatically generated
 3- pip install django-tables2
 ```
 
-You can read abute django-tabls2 here: https://django-tables2.readthedocs.io/en/latest/pages/tutorial.
+You can read about django-tabls2 here: https://django-tables2.readthedocs.io/en/latest/pages/tutorial.
 
 ```
 3- pip install django-filter
 ```
 
-You can read abute django-filter here: https://django-filter.readthedocs.io/en/stable/guide/usage.html
+You can read about django-filter here: https://django-filter.readthedocs.io/en/stable/guide/usage.html
 
 ### example
 
-there are some examples in example app from this repostory which shows you how to use this package
+there are some examples in example app from this repository which shows you how to use this package
 
 #### preview 1
 
