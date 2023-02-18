@@ -29,3 +29,30 @@ You can read abute django-filter here: https://django-filter.readthedocs.io/en/s
 
 there are some examples from example app in this repostory which shows you how to use this package
 
+#### preview 1
+
+1- the book table and book table filter example
+![img_5.png](img_5.png)
+
+2- the result of book table example
+![img_9.png](img_9.png)
+
+3- the result of book table filter example
+![img_6.png](img_6.png)
+
+![img_7.png](img_7.png)
+
+![img_8.png](img_8.png)
+
+#### preview 2
+
+1- the library table and library table filter example
+![img_3.png](img_3.png)
+
+2- the result of library table example
+![img_1.png](img_1.png)
+
+3- the result of library table filter example
+![img_4.png](img_4.png)
+
+
